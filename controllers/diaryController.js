@@ -35,6 +35,8 @@ function fetchQuestionAnswer(url) {
  * Generate diary entries based on parsed data from StackOverflow.
  */
 function generateDiary(req, res) {
+    console.log("API called: generateDiary");
+    console.log(req.body);
     const { userid, history } = req.body;
     let parsedPosts = [];
   
@@ -156,8 +158,10 @@ function generateDiary(req, res) {
         });
     });
   }
-  
+
 function getDiary(req, res) {
+    console.log("API called: getDiary");
+    console.log(req.params);
     const userId = req.params.userId;
     const query = `SELECT * FROM diary WHERE user_id = ?`;
 
