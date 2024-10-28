@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Stack Overflow Logger",
+  "version": "1.0",
+  "description": "Logs visited Stack Overflow pages for today and exports them at midnight.",
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "storage",
+    "alarms",
+    "downloads"
+  ],
+  "host_permissions": [
+    "http://13.209.82.235/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
