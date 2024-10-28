@@ -37,89 +37,97 @@ function fetchQuestionAnswer(url) {
 function generateDiary(req, res) {
     const { userid, history } = req.body;
     let parsedPosts = [];
-
+  
     const urls = history.map(entry => entry.url);
     const checkUrlsQuery = `SELECT url FROM diary WHERE user_id = ? AND url IN (?)`;
-    
+  
     connection.query(checkUrlsQuery, [userid, urls], (err, results) => {
       if (err) {
         console.error("Error checking existing URLs:", err);
         return res.status(500).json({ error: "Database query error" });
       }
-
+  
       const existingUrls = new Set(results.map(row => row.url));
       const filteredHistory = history.filter(entry => !existingUrls.has(entry.url));
-
+  
       if (filteredHistory.length === 0) {
         console.log("All URLs already generated for this user, nothing to process.");
         return res.status(200).json({ message: "All URLs already generated for this user." });
       }
-
+  
       const fetchPromises = filteredHistory.map(entry => {
         return fetchQuestionAnswer(entry.url).then(({ question, answer }) => {
           parsedPosts.push({ question, answer, date: entry.date, url: entry.url });
         });
       });
-
+  
       Promise.all(fetchPromises)
         .then(() => {
-
           if (parsedPosts.length === 0) {
             return res.status(400).json({ error: "No valid data parsed from URLs." });
           }
-
-          // Concatenate entries into groups of up to 3 question-answer pairs
-          const groupedPosts = [];
-          for (let i = 0; i < parsedPosts.length; i += 3) {
-            const group = parsedPosts.slice(i, i + 3);
-            const concatenatedQuestion = group.map(post => post.question).join("\n\n");
-            const concatenatedAnswer = group.map(post => post.answer).join("\n\n");
-            const firstUrl = group[0].url; // Only store the URL of the first question in the group
-            groupedPosts.push({
-              date: group[0].date,  // Use the date from the first post in the group
-              question: concatenatedQuestion,
-              answer: concatenatedAnswer,
-              url: firstUrl,
-            });
-          }
-
+  
+          // Separate posts into even and odd indices
+          const evenPosts = parsedPosts.filter((_, index) => index % 2 === 0);
+          const oddPosts = parsedPosts.filter((_, index) => index % 2 !== 0);
+  
+          const groupPosts = (posts) => {
+            const grouped = [];
+            for (let i = 0; i < posts.length; i += 3) {
+              const group = posts.slice(i, i + 3);
+              const concatenatedQuestion = group.map(post => post.question).join("\n\n");
+              const concatenatedAnswer = group.map(post => post.answer).join("\n\n");
+              const firstUrl = group[0].url;
+              grouped.push({
+                date: group[0].date,
+                question: concatenatedQuestion,
+                answer: concatenatedAnswer,
+                url: firstUrl,
+              });
+            }
+            return grouped;
+          };
+  
+          // Concatenate entries for even and odd grouped posts
+          const groupedPosts = [...groupPosts(evenPosts), ...groupPosts(oddPosts)];
+  
           const processPostPromises = groupedPosts.map((post, i) => {
             const { question, answer, date, url } = post;
             return openai.chat.completions.create({
               model: "gpt-4o-mini",
               messages: [
-                { role: "system", content: "You are a college student keeping an art journal. You are going to give your journal a title. Please give it a short, simple title for any of the following. Be brief and contain only keywords. " },
+                { role: "system", content: "You are a college student keeping an art journal. You are going to give your journal a title. Please give it a short, simple title for any of the following. Be brief and contain only keywords." },
                 { role: "user", content: `${question}\n${answer}` },
               ],
             })
               .then(titleCompletion => {
                 const title = titleCompletion.choices[0]?.message?.content;
                 if (!title) return Promise.resolve();
-
+  
                 return openai.chat.completions.create({
                   model: "gpt-4o-mini",
                   messages: [
-                    { role: "system", content: "You're a college student keeping a journal, and you want to summarize the article below in 3 sentences or so, like Today I learned. In the same tone as if you were journaling about what you learned and what the concept was. " },
+                    { role: "system", content: "You're a college student keeping a journal, and you want to summarize the article below in 3 sentences or so, like Today I learned. In the same tone as if you were journaling about what you learned and what the concept was." },
                     { role: "user", content: `${question}\n${answer}` },
                   ],
                 })
                   .then(summaryCompletion => {
                     const summary = summaryCompletion.choices[0]?.message?.content;
                     if (!summary) return Promise.resolve();
-
+  
                     return openai.images.generate({
                       model: "dall-e-3",
-                      prompt: `Create a crayon drawing of the sentence in "${question}" that looks like something an elementary school student would put in a picture journal.`,  // Only using questions for image generation
+                      prompt: `Create a crayon drawing of the sentence in "${question}" that looks like something an elementary school student would put in a picture journal.`,
                       n: 1,
-                      size: "1024x1024",
+                      size: "1792x1024",
                     })
                       .then(imageResponse => {
                         const imageUrl = imageResponse.data[0]?.url;
                         if (!imageUrl) return Promise.resolve();
-
+  
                         const query = `INSERT INTO diary (user_id, date, picture, title, post, parsed_post, url) VALUES (?, ?, ?, ?, ?, ?, ?)`;
                         const parsedContent = `${question}\n${answer}`;
-
+  
                         return new Promise((resolve, reject) => {
                           connection.query(query, [userid, date, imageUrl, title, summary, parsedContent, url], err => {
                             if (err) {
@@ -136,7 +144,7 @@ function generateDiary(req, res) {
               })
               .catch(err => console.error(`Error generating title, summary, or image for entry ${i + 1}:`, err));
           });
-
+  
           return Promise.all(processPostPromises);
         })
         .then(() => {
@@ -147,8 +155,8 @@ function generateDiary(req, res) {
           res.status(500).json({ error: "Failed to generate diary entries." });
         });
     });
-}
-
+  }
+  
 function getDiary(req, res) {
     const userId = req.params.userId;
     const query = `SELECT * FROM diary WHERE user_id = ?`;
