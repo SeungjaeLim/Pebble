@@ -88,7 +88,7 @@ function generateDiary(req, res) {
             return openai.chat.completions.create({
               model: "gpt-4o-mini",
               messages: [
-                { role: "system", content: "Generate a concise title for this StackOverflow post." },
+                { role: "system", content: "You are a college student keeping an art journal. You are going to give your journal a title. Please give it a short, simple title for any of the following. Be brief and contain only keywords. " },
                 { role: "user", content: `${question}\n${answer}` },
               ],
             })
@@ -99,7 +99,7 @@ function generateDiary(req, res) {
                 return openai.chat.completions.create({
                   model: "gpt-4o-mini",
                   messages: [
-                    { role: "system", content: "Summarize this StackOverflow post for a learning diary." },
+                    { role: "system", content: "You're a college student keeping a journal, and you want to summarize the article below in 3 sentences or so, like Today I learned. In the same tone as if you were journaling about what you learned and what the concept was. " },
                     { role: "user", content: `${question}\n${answer}` },
                   ],
                 })
@@ -109,7 +109,7 @@ function generateDiary(req, res) {
 
                     return openai.images.generate({
                       model: "dall-e-3",
-                      prompt: `Create an image for the topic: "${question}"`,  // Only using questions for image generation
+                      prompt: `Create a crayon drawing of the sentence in "${question}" that looks like something an elementary school student would put in a picture journal.`,  // Only using questions for image generation
                       n: 1,
                       size: "1024x1024",
                     })
