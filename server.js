@@ -15,22 +15,22 @@ app.use(cors({
 
 // Swagger setup
 const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Pebble Diary API",
-      version: "1.0.0",
-      description: "API for generating and retrieving user diaries from Stack Overflow questions.",
-    },
-    servers: [
-      {
-        url: `http://${process.env.PUBLIC_IP || "localhost"}:${process.env.PORT || 3000}`,
+    definition: {
+      openapi: "3.0.0",
+      info: {
+        title: "Pebble Diary API",
+        version: "1.0.0",
+        description: "API for generating and retrieving user diaries from Stack Overflow questions.",
       },
-    ],
-  },
-  apis: ["./routes/*.js"],
-};
-
+      servers: [
+        {
+          url: `http://${process.env.PUBLIC_IP}:${process.env.PORT || 8000}`,
+        },
+      ],
+    },
+    apis: ["./routes/*.js"],
+  };
+  
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
