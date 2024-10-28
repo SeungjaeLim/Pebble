@@ -20,7 +20,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${process.env.PORT || 3000}`,
+        url: `http://${process.env.PUBLIC_IP || "localhost"}:${process.env.PORT || 3000}`,
       },
     ],
   },
@@ -34,6 +34,6 @@ app.use("/api/diary", diaryRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`Swagger docs available at http://localhost:${PORT}/api-docs`);
+  console.log(`Server running on http://${process.env.PUBLIC_IP || "localhost"}:${PORT}`);
+  console.log(`Swagger docs available at http://${process.env.PUBLIC_IP || "localhost"}:${PORT}/api-docs`);
 });
