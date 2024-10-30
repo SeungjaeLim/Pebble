@@ -98,7 +98,12 @@ function generateDiary(req, res) {
             return openai.chat.completions.create({
               model: "gpt-4o-mini",
               messages: [
-                { role: "system", content: "You are a college student keeping an art journal. You are going to give your journal a title. Please give it a short, simple title for any of the following. Be brief and contain only keywords." },
+                { 
+                  role: "system", 
+                  content: "You are a college student keeping a daily learning journal. Based on the examples, generate a short, keyword-based title for the provided input. Keep it concise and insightful, similar to a diary entry title." 
+                },
+                { role: "assistant", content: "Example: \nInput: 'Learned about neural networks and backpropagation in class today. Focused on understanding gradients and the importance of weight updates.' \nTitle: 'Neural Networks & Backpropagation'" },
+                { role: "assistant", content: "Example: \nInput: 'Read an article on sustainable energy solutions and the impact of solar technology on reducing emissions. Fascinating insights into renewable energy advancements.' \nTitle: 'Sustainable Energy & Solar Technology'" },
                 { role: "user", content: `${question}\n${answer}` },
               ],
             })
@@ -109,17 +114,23 @@ function generateDiary(req, res) {
                 return openai.chat.completions.create({
                   model: "gpt-4o-mini",
                   messages: [
-                    { role: "system", content: "You're a college student keeping a journal, and you want to summarize the article below in 3 sentences or so, like Today I learned. In the same tone as if you were journaling about what you learned and what the concept was." },
+                    { 
+                      role: "system", 
+                      content: "You're a college student keeping a learning journal(Today I Learned). Summarize the input in 2-3 sentences to capture what you learned, the key takeaways, and any personal insights, as shown in the examples. Use a light, reflective tone." 
+                    },
+                    { role: "assistant", content: "Example: \nInput: 'Learned about neural networks and backpropagation in class today. Focused on understanding gradients and the importance of weight updates.' \nSummary: 'Today, I explored how neural networks use backpropagation to adjust weights, driven by gradient calculations. It was helpful to understand how each update moves the network closer to minimizing errors, making predictions more accurate.'" },
+                    { role: "assistant", content: "Example: \nInput: 'Read an article on sustainable energy solutions and the impact of solar technology on reducing emissions. Fascinating insights into renewable energy advancements.' \nSummary: 'I dived into renewable energy today, especially the role of solar tech in reducing emissions. It’s inspiring to see how advancements in solar power could help create a sustainable future.'" },
                     { role: "user", content: `${question}\n${answer}` },
                   ],
                 })
+              })
                   .then(summaryCompletion => {
                     const summary = summaryCompletion.choices[0]?.message?.content;
                     if (!summary) return Promise.resolve();
   
                     return openai.images.generate({
                       model: "dall-e-3",
-                      prompt: `Create a crayon drawing of the sentence in "${question}" that looks like something an elementary school student would put in a picture journal.`,
+                      prompt: `A crayon drawing by an elementary school student showing "${question}". The drawing uses thick, colorful crayon strokes and playful lines typical of a child’s artwork. The scene is simple and imaginative, with uneven, bold lines and vibrant colors. The background includes "${answer}". The drawing has a childlike quality, with bright, expressive colors and a fun, creative layout.`,
                       n: 1,
                       size: "1792x1024",
                     })
