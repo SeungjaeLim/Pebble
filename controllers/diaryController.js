@@ -100,11 +100,11 @@ function generateDiary(req, res) {
               messages: [
                 { 
                   role: "system", 
-                  content: "You are a college student keeping a daily learning journal. Based on the examples, generate a short, keyword-based title for the provided input. Keep it concise and insightful, similar to a diary entry title." 
+                  content: "You are a college student keeping a daily learning journal. Based on the examples, generate a short, keyword-based title for the provided input. Keep it concise and insightful, similar to a diary entry title and avoid markdown formatting. Only respond in plain text.." 
                 },
-                { role: "assistant", content: "Example: \nInput: 'Learned about neural networks and backpropagation in class today. Focused on understanding gradients and the importance of weight updates.' \nTitle: 'Neural Networks & Backpropagation'" },
-                { role: "assistant", content: "Example: \nInput: 'Read an article on sustainable energy solutions and the impact of solar technology on reducing emissions. Fascinating insights into renewable energy advancements.' \nTitle: 'Sustainable Energy & Solar Technology'" },
-                { role: "user", content: `${question}\n${answer}` },
+                { role: "assistant", content: "Example: \nInput: 'Learned about neural networks and backpropagation in class today. Focused on understanding gradients and the importance of weight updates.' \nTitle: Neural Networks & Backpropagation" },
+                { role: "assistant", content: "Example: \nInput: 'Read an article on sustainable energy solutions and the impact of solar technology on reducing emissions. Fascinating insights into renewable energy advancements.' \nTitle: Sustainable Energy & Solar Technology" },
+                { role: "user", content: `${question}\n${answer}\nTitle: ` },
               ],
             })
               .then(titleCompletion => {
@@ -116,7 +116,7 @@ function generateDiary(req, res) {
                   messages: [
                     { 
                       role: "system", 
-                      content: "You're a college student keeping a learning journal. Summarize the input in 2-3 sentences to capture what you learned, the key takeaways, and any personal insights, as shown in the examples. Use a light, reflective tone." 
+                      content: "You're a college student keeping a learning journal. Summarize the input in 2-3 sentences to capture what you learned, the key takeaways, and any personal insights, as shown in the examples. Use a light, reflective tone  and avoid markdown formatting. Only respond in plain text." 
                     },
                     { role: "assistant", content: "Example: \nInput: 'Learned about neural networks and backpropagation in class today. Focused on understanding gradients and the importance of weight updates.' \nSummary: 'Today, I explored how neural networks use backpropagation to adjust weights, driven by gradient calculations. It was helpful to understand how each update moves the network closer to minimizing errors, making predictions more accurate.'" },
                     { role: "assistant", content: "Example: \nInput: 'Read an article on sustainable energy solutions and the impact of solar technology on reducing emissions. Fascinating insights into renewable energy advancements.' \nSummary: 'I dived into renewable energy today, especially the role of solar tech in reducing emissions. It’s inspiring to see how advancements in solar power could help create a sustainable future.'" },
