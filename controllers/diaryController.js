@@ -116,14 +116,13 @@ function generateDiary(req, res) {
                   messages: [
                     { 
                       role: "system", 
-                      content: "You're a college student keeping a learning journal(Today I Learned). Summarize the input in 2-3 sentences to capture what you learned, the key takeaways, and any personal insights, as shown in the examples. Use a light, reflective tone." 
+                      content: "You're a college student keeping a learning journal. Summarize the input in 2-3 sentences to capture what you learned, the key takeaways, and any personal insights, as shown in the examples. Use a light, reflective tone." 
                     },
                     { role: "assistant", content: "Example: \nInput: 'Learned about neural networks and backpropagation in class today. Focused on understanding gradients and the importance of weight updates.' \nSummary: 'Today, I explored how neural networks use backpropagation to adjust weights, driven by gradient calculations. It was helpful to understand how each update moves the network closer to minimizing errors, making predictions more accurate.'" },
                     { role: "assistant", content: "Example: \nInput: 'Read an article on sustainable energy solutions and the impact of solar technology on reducing emissions. Fascinating insights into renewable energy advancements.' \nSummary: 'I dived into renewable energy today, especially the role of solar tech in reducing emissions. It’s inspiring to see how advancements in solar power could help create a sustainable future.'" },
                     { role: "user", content: `${question}\n${answer}` },
                   ],
                 })
-              })
                   .then(summaryCompletion => {
                     const summary = summaryCompletion.choices[0]?.message?.content;
                     if (!summary) return Promise.resolve();
