@@ -6,7 +6,7 @@ function getTodayDate() {
 
 // 탭이 업데이트될 때마다 호출되는 함수
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === 'complete' && tab.url.includes('stackoverflow.com/questions/')) {
+  if (changeInfo.status === 'complete' && tab.url.startsWith('https://stackoverflow.com/questions/')) {
     const today = getTodayDate();
 
     // 저장된 데이터를 불러와서 오늘 날짜와 같은 방문 기록만 저장
@@ -21,31 +21,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         });
       }
     });
-  }
-});
-
-// 자정 알람 설정 (설치 시와 확장 프로그램이 재로드될 때 설정)
-chrome.runtime.onInstalled.addListener(() => {
-  setMidnightAlarm();
-});
-
-chrome.runtime.onStartup.addListener(() => {
-  setMidnightAlarm();
-});
-
-function setMidnightAlarm() {
-  const now = new Date();
-  const midnight = new Date();
-  midnight.setHours(24, 0, 0, 0);  // 자정 시간 설정
-
-  const timeUntilMidnight = midnight.getTime() - now.getTime();
-  chrome.alarms.create('midnightAlarm', { when: Date.now() + timeUntilMidnight, periodInMinutes: 1440 });
-}
-
-// 자정 알람이 울리면 호출되는 함수
-chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === 'midnightAlarm') {
-    exportVisitedUrls();
   }
 });
 
