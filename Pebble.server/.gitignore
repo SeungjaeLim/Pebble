@@ -1,0 +1,28 @@
+# Node.js dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database files (if using SQLite or other local DB for dev/testing)
+*.sqlite
+*.sqlite3
+db/
+
+# Swagger UI cache
+swagger-output.json
+
+# IDE and OS-specific files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
