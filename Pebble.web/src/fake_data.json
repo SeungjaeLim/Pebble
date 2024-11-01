@@ -1,0 +1,32 @@
+{
+  "sehoon1106": {
+    "user_name" : "Sehoon",
+    "diary":{
+      "2024-10-9": [
+        {
+          "study_id": 1,
+          "img": "/placeholder_image.png",
+          "study_time": "2",
+          "title": "Understanding Fourier Transforms",
+          "content": "In this session, I focused on the basics of Fourier transforms and how they are used in signal processing. The primary takeaway was learning how to convert signals from the time domain to the frequency domain."
+        },
+        {
+          "study_id": 2,
+          "img": "/placeholder_image.png",
+          "study_time": "1.5",
+          "title": "Deep Dive into Convolutional Networks",
+          "content": "I explored how convolutional layers work in deep neural networks. Topics covered included filters, stride, and padding. The main goal was to understand how convolutions extract features from images."
+        }
+      ],
+      "2024-10-18": [
+        {
+          "study_id": 1,
+          "img": "/placeholder_image.png",
+          "study_time": "3",
+          "title": "Acoustic Signal Processing",
+          "content": "This session focused on how sound waves are analyzed using digital signal processing techniques. Covered topics included signal reflection, Doppler shifts, and noise filtering."
+        }
+      ]
+    }
+  }
+}

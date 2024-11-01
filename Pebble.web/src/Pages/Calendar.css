@@ -1,0 +1,154 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: white;
+}
+
+.left_arrow{
+    position: absolute;
+    top: 50%;
+    left: 30px;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+}
+.left_arrow.active{
+    cursor: pointer;
+}
+.right_arrow{
+    position: absolute;
+    top: 50%;
+    right: 30px;
+    transform: translateY(-50%) scaleX(-1);
+    width: 50px;
+    height: 50px;
+}
+.right_arrow.active{
+    cursor: pointer;
+}
+
+.calendarPage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.calendar {
+    --calendar-width: min(max(95vh, 300px), 90vw);
+    width: var(--calendar-width);
+    margin: 0 auto;
+    transform: translateY(-2vh);
+}
+
+.header{
+    display: grid;
+    grid-template-areas: 
+        "month name name"
+        "month totalstudytime totalstudytime";
+}
+.month{
+    grid-area: month;
+    font-size: calc(var(--calendar-width) / 7);
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+}
+.name{
+    grid-area: name;
+    text-align: right;
+    font-size: calc(var(--calendar-width) / 15);
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    display: inline-block;
+    transform: translateY(10%);
+}
+.totalstudytime{
+    grid-area: totalstudytime;
+    text-align: right;
+    height: 100%;
+    font-size: calc(var(--calendar-width) / 25);
+    font-weight: 300;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    display: inline-block;
+}
+
+strong {
+    font-weight: 600;
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-gap: 1px;
+    text-align: center;
+    font-size: calc(var(--calendar-width) / 40);
+    font-weight: 600;
+}
+
+.tiles{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    width: 100%;
+}
+
+.tile{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    aspect-ratio: 1/1;
+
+    border: 1px solid #000;
+    background-color: #fff;
+    overflow: hidden;
+}
+.tile.active{
+    cursor: pointer;
+}
+
+.day{
+    position: absolute;
+    bottom:3px;
+    right:6px;
+    font-size: calc(var(--calendar-width) / 50);
+    font-weight: 300;
+    text-align: right
+}
+.diary_num{
+    position: absolute;
+    top:3px;
+    right:6px;
+    font-size: calc(var(--calendar-width) / 50);
+    font-weight: 300;
+    color:white;
+    text-align: right
+}
+.white_circle{
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: white;
+    right: -24px;
+    bottom: -24px;
+
+}
+.red_circle{
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: #ED1B26;
+    right: -24px;
+    top: -24px;
+
+}
